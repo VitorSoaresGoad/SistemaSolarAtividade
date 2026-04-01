@@ -37,6 +37,18 @@ const planetas = [
     nome: 'Saturno',
     descricao: 'Famoso por seu complexo e brilhante sistema de anéis feitos de gelo e rocha. Também é um gigante gasoso.',
     imagem: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg'
+  },
+  {
+    id: '7',
+    nome: 'Urano',
+    descricao: 'Um gigante de gelo que gira de lado. Tem uma cor azul-esverdeada devido ao gás metano em sua atmosfera.',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg'
+  },
+  {
+    id: '8',
+    nome: 'Netuno',
+    descricao: 'O planeta mais distante do Sol. É um gigante de gelo escuro, frio e com ventos supersônicos muito fortes.',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/6/63/Neptune_-_Voyager_2_%2829777304266%29.jpg'
   }
 ];
 
