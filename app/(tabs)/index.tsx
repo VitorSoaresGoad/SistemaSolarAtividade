@@ -1,98 +1,180 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, FlatList, SafeAreaView } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const planetas = [
+  {
+    id: '1',
+    nome: 'Mercúrio',
+    descricao: 'O menor planeta do Sistema Solar e o mais próximo do Sol. Não possui luas e sua superfície é cheia de crateras.',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg'
+  },
+  {
+    id: '2',
+    nome: 'Vênus',
+    descricao: 'O planeta mais quente do Sistema Solar, com uma atmosfera densa e tóxica. É o planeta mais brilhante no nosso céu.',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Venus_from_Mariner_10.jpg'
+  },
+  {
+    id: '3',
+    nome: 'Terra',
+    descricao: 'O nosso lar. O único planeta conhecido a abrigar vida, com a maior parte de sua superfície coberta por água líquida.',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg'
+  },
+  {
+    id: '4',
+    nome: 'Marte',
+    descricao: 'Conhecido como o Planeta Vermelho devido ao óxido de ferro em sua superfície. Possui o maior vulcão do Sistema Solar.',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg'
+  },
+  {
+    id: '5',
+    nome: 'Júpiter',
+    descricao: 'O maior planeta do Sistema Solar. É um gigante gasoso conhecido por sua Grande Mancha Vermelha, uma tempestade gigante.',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg'
+  },
+  {
+    id: '6',
+    nome: 'Saturno',
+    descricao: 'Famoso por seu complexo e brilhante sistema de anéis feitos de gelo e rocha. Também é um gigante gasoso.',
+    imagem: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg'
+  }
+];
 
-export default function HomeScreen() {
+export default function App() {
+  const [modalVisivel, setModalVisivel] = useState(false);
+  const [planetaSelecionado, setPlanetaSelecionado] = useState<any>(null);
+
+  const abrirModal = (planeta: any) => {
+    setPlanetaSelecionado(planeta);
+    setModalVisivel(true);
+  };
+
+  const renderItem = ({ item }: { item: any }) => (
+    <TouchableOpacity style={styles.card} onPress={() => abrirModal(item)}>
+      <Image source={{ uri: item.imagem }} style={styles.imagemCard} />
+      <Text style={styles.nomeCard}>{item.nome}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.titulo}>Sistema Solar</Text>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <FlatList
+        data={planetas}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        numColumns={2} 
+        contentContainerStyle={styles.lista}
+      />
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisivel}
+        onRequestClose={() => setModalVisivel(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            {planetaSelecionado && (
+              <>
+                <Image source={{ uri: planetaSelecionado.imagem }} style={styles.imagemModal} />
+                <Text style={styles.tituloModal}>{planetaSelecionado.nome}</Text>
+                <Text style={styles.descricaoModal}>{planetaSelecionado.descricao}</Text>
+                
+                <TouchableOpacity style={styles.botaoFechar} onPress={() => setModalVisivel(false)}>
+                  <Text style={styles.textoBotaoFechar}>Voltar para o Espaço</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    backgroundColor: '#0B0D17', 
+    paddingTop: 40,
+  },
+  titulo: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center',
+    marginBottom: 20,
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+  },
+  lista: {
+    paddingHorizontal: 10,
+  },
+  card: {
+    flex: 1,
+    backgroundColor: '#15192B',
+    margin: 8,
+    borderRadius: 12,
     alignItems: 'center',
-    gap: 8,
+    padding: 15,
+    elevation: 3,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  imagemCard: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  nomeCard: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '85%',
+    backgroundColor: '#15192B',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3A405A',
+  },
+  imagemModal: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
+  },
+  tituloModal: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFF',
+    marginBottom: 10,
+  },
+  descricaoModal: {
+    fontSize: 16,
+    color: '#D0D6F9',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 25,
+  },
+  botaoFechar: {
+    backgroundColor: '#4A90E2',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+  },
+  textoBotaoFechar: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
